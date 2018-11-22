@@ -1,0 +1,10 @@
+[package]
+name = "famo-lib"
+version = "0.1.0"
+authors = ["tbrand <taichiro0709@gmail.com>"]
+
+[dependencies]
+famo-archive = { version = "0.1.0", path = "../famo-archive" }
+famo-hash = { version = "0.1.0", path = "../famo-hash" }
+famo-lang = { version = "0.1.0", path = "../famo-lang" }
+famo-s3 = { version = "0.1.0", path = "../famo-s3" }       

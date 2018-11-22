@@ -1,0 +1,14 @@
+[package]
+name = "famo-s3"
+version = "0.1.0"
+authors = ["tbrand <taichiro0709@gmail.com>"]
+
+[dependencies]
+failure = "*"
+getset = "*"
+clap = "*"
+time = "*"
+ring = "*"
+base64 = "*"
+reqwest = "*"
+log = "*"

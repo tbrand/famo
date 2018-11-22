@@ -1,0 +1,7 @@
+[package]
+name = "famo-lang"
+version = "0.1.0"
+authors = ["tbrand <taichiro0709@gmail.com>"]
+
+[dependencies]
+getset = "*"

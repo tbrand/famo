@@ -1,12 +1,12 @@
 extern crate failure;
 extern crate num;
-extern crate ring;
+extern crate sha2;
 
 use failure::Error;
 use num::bigint::BigUint;
-use ring::digest;
 use std::fs;
 use std::path::Path;
+use sha2::{Sha256, Digest};
 
 ///
 /// Calculate unique hex from paths of files and directories.
@@ -147,12 +147,9 @@ fn unique_contents(path: &Path) -> Result<Vec<u8>, Error> {
 
 // &[u8] -> SHA256 -> BigUint
 fn gen_biguint(bytes: &[u8]) -> BigUint {
-    let mut sha256 = digest::Context::new(&digest::SHA256);
-
-    sha256.update(bytes);
-
-    let finished = sha256.finish();
-    let bytes = finished.as_ref();
+    let mut hasher = Sha256::new();
+    hasher.input(bytes);
+    let bytes: &[u8] = &hasher.result();
     let n = BigUint::from_bytes_be(bytes);
 
     n

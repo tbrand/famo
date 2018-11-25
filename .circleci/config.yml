@@ -8,18 +8,53 @@ jobs:
       - run:
           name: unit test
           command: cargo test --all
-  dev-build:
+  dev-build-linux:
     docker:
       - image: ekidd/rust-musl-builder:latest
     steps:
       - checkout
       - run:
-          name: build a binary
+          name: build a binaries
           command: cargo build --release
+          command: ldd target/x86_64-unknown-linux-musl/release/famo || true
+  dev-build-macos:
+    macos:
+      xcode: "10.0"
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - checkout
+      - run: |
+          curl https://sh.rustup.rs -sSf | sh
+          source ~/.cargo/env
+      - run: |
+          cargo build --release
+  deploy-linux:
+    docker:
+      - image: ekidd/rust-musl-builder:latest
+    steps:
+      - checkout
+      - run: |
+          sudo apt-get update -y && sudo apt-get install wget
+          wget https://github.com/tcnksm/ghr/releases/download/v0.12.0/ghr_v0.12.0_linux_amd64.tar.gz
+          tar -zxvf ghr_v0.12.0_linux_amd64.tar.gz
+          sudo cp ghr_v0.12.0_linux_amd64/ghr /usr/local/bin/
+          mkdir artifacts
+      - run: cargo build --release
+      - run: cp target/x86_64-unknown-linux-musl/release/famo artifacts/.
 
 workflows:
   version: 2
-  pr:
+  build-and-deploy:
     jobs:
       - unit-test
-      - dev-build
+      - dev-build-linux
+      - dev-biuld-macos
+      - deploy-linux:
+          requires:
+            - unit-test
+            - dev-build-linux
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+/
+            branches:
+              ignore: /.*/

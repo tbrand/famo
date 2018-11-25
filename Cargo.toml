@@ -9,7 +9,6 @@ clap = "*"
 log = "*"
 env_logger = "*"
 failure = "*"
-daemonize = "*"
 
 [workspace]
 members = [

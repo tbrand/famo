@@ -160,7 +160,7 @@ fn arg_verbose<'a, 'b>() -> Arg<'a, 'b> {
 
 fn arg_async<'a, 'b>() -> Arg<'a, 'b> {
     Arg::with_name("async")
-        .help("Uploading archive asyncronously. Use `famo wait` to sync the process.")
+        .help("[WIP] Uploading archive asyncronously. Use `famo wait` to sync the process.")
         .takes_value(false)
         .long("--async")
 }

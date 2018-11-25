@@ -1,4 +1,7 @@
-# Famo
+<img src="https://user-images.githubusercontent.com/3483230/48980782-e0e9f580-f110-11e8-9608-0d9ad31c97c5.png" align="right" alt="logo" width="150px" />
+
+[![Build Status](https://travis-ci.com/tbrand/famo.svg?branch=master)](https://travis-ci.com/tbrand/famo)
+[![Build status](https://ci.appveyor.com/api/projects/status/6yv5ehrj9t7w1prq/branch/master?svg=true)](https://ci.appveyor.com/project/tbrand/famo/branch/master)
 
 Famo is a command line tool for caching builds on S3 similer to [sccache](https://github.com/mozilla/sccache).
 Famo is assumed to be used in many CI/CD platforms and for many languages.

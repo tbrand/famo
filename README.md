@@ -1,4 +1,4 @@
-<img src="https://user-images.githubusercontent.com/3483230/48980782-e0e9f580-f110-11e8-9608-0d9ad31c97c5.png" align="right" alt="logo" width="150px" />
+<img src="https://user-images.githubusercontent.com/3483230/48980782-e0e9f580-f110-11e8-9608-0d9ad31c97c5.png" align="left" alt="logo" width="150px" />
 
 [![Build Status](https://travis-ci.com/tbrand/famo.svg?branch=master)](https://travis-ci.com/tbrand/famo)
 [![Build status](https://ci.appveyor.com/api/projects/status/6yv5ehrj9t7w1prq/branch/master?svg=true)](https://ci.appveyor.com/project/tbrand/famo/branch/master)

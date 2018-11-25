@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  unit-test:
     docker:
       - image: circleci/rust:latest
     steps:
@@ -8,3 +8,18 @@ jobs:
       - run:
           name: unit test
           command: cargo test --all
+  dev-build:
+    docker:
+      - image: ekidd/rust-musl-builder:latest
+    steps:
+      - checkout
+      - run:
+          name: build a binary
+          command: cargo build --release
+
+workflows:
+  version: 2
+  pr:
+    jobs:
+      - unit-test
+      - dev-build

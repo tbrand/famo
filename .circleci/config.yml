@@ -13,10 +13,8 @@ jobs:
       - image: ekidd/rust-musl-builder:latest
     steps:
       - checkout
-      - run:
-          name: build a binaries
-          command: cargo build --release
-          command: ldd target/x86_64-unknown-linux-musl/release/famo || true
+      - run: cargo build --release
+      - run: ldd target/x86_64-unknown-linux-musl/release/famo || true
   dev-build-macos:
     macos:
       xcode: "10.0"

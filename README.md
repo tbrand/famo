@@ -60,7 +60,6 @@ The cache will reduce the build time especially for the big projects.
 
 ## Comparing to similer works
 There are several works which Famo was inspired. `sscache` developed by Mozilla is also caching builds onto cloud storages but supported languages (build tools) are limited.
-Also, it's assumed to be used in local build, not on CI/CD. You could use it on it by pre-install it into your build images but it's not good from the aspect of devops.
 `sccache` is inspired by ccache which only support `gcc`.
 - [sccache](https://github.com/mozilla/sccache)
 - [ccache](https://ccache.samba.org/)

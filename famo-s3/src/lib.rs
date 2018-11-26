@@ -5,10 +5,10 @@ extern crate getset;
 extern crate base64;
 extern crate clap;
 extern crate reqwest;
-extern crate ring;
 extern crate time;
 #[macro_use]
 extern crate log;
+extern crate crypto;
 
 pub mod context;
 mod signature;

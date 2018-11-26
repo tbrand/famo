@@ -1,6 +1,7 @@
 use context::Context;
-use ring::digest;
-use ring::hmac::{self, SigningKey};
+use crypto::hmac::Hmac;
+use crypto::mac::Mac;
+use crypto::sha1::Sha1;
 
 pub fn authorization(
     verb: &str,
@@ -31,6 +32,7 @@ fn sign(data: &[u8], secret_access_key: &str) -> String {
 }
 
 fn hmac(key: &str, data: &[u8]) -> Vec<u8> {
-    let key = SigningKey::new(&digest::SHA1, key.to_owned().as_bytes());
-    hmac::sign(&key, data).as_ref().to_vec()
+    let mut hmac = Hmac::new(Sha1::new(), key.to_owned().as_bytes());
+    hmac.input(data);
+    hmac.result().code().iter().map(|b| *b).collect::<Vec<u8>>()
 }

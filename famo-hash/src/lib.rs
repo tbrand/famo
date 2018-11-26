@@ -1,12 +1,12 @@
 extern crate failure;
 extern crate num;
-extern crate ring;
+extern crate sha2;
 
 use failure::Error;
 use num::bigint::BigUint;
-use ring::digest;
 use std::fs;
 use std::path::Path;
+use sha2::{Sha256, Digest};
 
 ///
 /// Calculate unique hex from paths of files and directories.
@@ -43,7 +43,7 @@ pub fn sum(paths: &Vec<&str>) -> Result<BigUint, Error> {
 
 ///
 /// Create a set of BigUint of each files.
-/// They are calculated from its contents, permission and path.
+/// They are calculated from its contents and path.
 ///
 /// ```rust
 /// use famo_hash::read;
@@ -105,7 +105,7 @@ pub fn read_dir(path: &Path, v: &mut Vec<BigUint>) -> Result<(), Error> {
 
 ///
 /// Read a single file to create a unique BigUint.
-/// The value is created from its contents, permission and path.
+/// The value is created from its contents and path.
 /// The result is pushed into Vec<BigUint>.
 ///
 /// ```rust
@@ -135,11 +135,6 @@ pub fn read_file(path: &Path, v: &mut Vec<BigUint>) -> Result<(), Error> {
 // Path -> Vec<u8>
 fn unique_contents(path: &Path) -> Result<Vec<u8>, Error> {
     let mut contents = fs::read(path)?;
-
-    let permission = path.metadata()?.permissions();
-    let permission_bit: u8 = if permission.readonly() { 0 } else { 1 };
-
-    contents.push(permission_bit);
     contents.append(&mut path.to_str().unwrap().as_bytes().to_vec());
 
     Ok(contents)
@@ -147,12 +142,9 @@ fn unique_contents(path: &Path) -> Result<Vec<u8>, Error> {
 
 // &[u8] -> SHA256 -> BigUint
 fn gen_biguint(bytes: &[u8]) -> BigUint {
-    let mut sha256 = digest::Context::new(&digest::SHA256);
-
-    sha256.update(bytes);
-
-    let finished = sha256.finish();
-    let bytes = finished.as_ref();
+    let mut hasher = Sha256::new();
+    hasher.input(bytes);
+    let bytes: &[u8] = &hasher.result();
     let n = BigUint::from_bytes_be(bytes);
 
     n
@@ -161,16 +153,6 @@ fn gen_biguint(bytes: &[u8]) -> BigUint {
 #[cfg(test)]
 mod test {
     use super::*;
-
-    fn switch_permission(path: &AsRef<Path>) -> Result<(), Error> {
-        // Switch permission
-        let metadata = fs::metadata(path)?;
-        let mut permission = metadata.permissions();
-        let current_permission = permission.readonly();
-        permission.set_readonly(!current_permission);
-        fs::set_permissions(path, permission)?;
-        Ok(())
-    }
 
     #[test]
     fn gen_biguint_success() {
@@ -186,10 +168,13 @@ mod test {
 
     #[test]
     fn unique_contents_of_single_file() {
-        let bytes = vec![48, 1, 102, 105, 120, 116, 117, 114, 101, 115, 47, 117,
-                         110, 105, 113, 117, 101, 95, 99, 111, 110, 116, 101, 110,
-                         116, 115, 95, 111, 102, 95, 115, 105, 110, 103, 108, 101,
-                         95, 102, 105, 108, 101, 47, 102, 105, 108, 101];
+        let bytes = vec![
+            48, 102, 105, 120, 116, 117, 114, 101, 115, 47,
+            117, 110, 105, 113, 117, 101, 95, 99, 111, 110,
+            116, 101, 110, 116, 115, 95, 111, 102, 95, 115,
+            105, 110, 103, 108, 101, 95, 102, 105, 108, 101,
+            47, 102, 105, 108, 101
+        ];
 
         let path = Path::new("fixtures/unique_contents_of_single_file/file");
         let v = unique_contents(&path).unwrap();
@@ -206,18 +191,5 @@ mod test {
         let v1 = unique_contents(&path1).unwrap();
 
         assert_ne!(v0, v1);
-    }
-
-    #[test]
-    fn unique_contents_are_not_same_if_permission_is_changed() {
-        let path = Path::new("fixtures/unique_contents_are_not_same_if_permission_is_changed/file");
-
-        let v_before = unique_contents(&path).unwrap();
-        switch_permission(&path).unwrap();
-
-        let v_after = unique_contents(&path).unwrap();
-        switch_permission(&path).unwrap();
-
-        assert_ne!(v_before, v_after);
     }
 }

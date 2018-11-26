@@ -1,4 +1,9 @@
-# Famo
+<img src="https://user-images.githubusercontent.com/3483230/48980782-e0e9f580-f110-11e8-9608-0d9ad31c97c5.png" align="left" alt="logo" width="150px" />
+
+[![Build Status](https://travis-ci.com/tbrand/famo.svg?branch=master)](https://travis-ci.com/tbrand/famo)
+[![Build status](https://ci.appveyor.com/api/projects/status/6yv5ehrj9t7w1prq/branch/master?svg=true)](https://ci.appveyor.com/project/tbrand/famo/branch/master)
+
+**This project is developed for my personal practice. Not recommented to be used in your productions.**
 
 Famo is a command line tool for caching builds on S3 similer to [sccache](https://github.com/mozilla/sccache).
 Famo is assumed to be used in many CI/CD platforms and for many languages.
@@ -57,7 +62,6 @@ The cache will reduce the build time especially for the big projects.
 
 ## Comparing to similer works
 There are several works which Famo was inspired. `sscache` developed by Mozilla is also caching builds onto cloud storages but supported languages (build tools) are limited.
-Also, it's assumed to be used in local build, not on CI/CD. You could use it on it by pre-install it into your build images but it's not good from the aspect of devops.
 `sccache` is inspired by ccache which only support `gcc`.
 - [sccache](https://github.com/mozilla/sccache)
 - [ccache](https://ccache.samba.org/)

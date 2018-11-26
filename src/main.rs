@@ -6,19 +6,16 @@ extern crate env_logger;
 #[macro_use]
 extern crate failure;
 extern crate famo_lib;
-extern crate daemonize;
 
 mod cli;
 mod error;
 mod phase;
 
-use daemonize::Daemonize;
 use failure::Error;
 use famo_lib::hash;
 use famo_lib::lang::detect;
 use famo_lib::s3;
 use std::env;
-use std::path::Path;
 
 fn main() {
     if let Err(_) = env::var("RUST_LOG") {
@@ -33,6 +30,8 @@ fn main() {
 }
 
 fn main_inner() -> Result<(), Error> {
+    let matches = cli::matches();
+
     let lang = detect(&env::current_dir().unwrap());
 
     if lang.is_some() {
@@ -41,8 +40,6 @@ fn main_inner() -> Result<(), Error> {
             &lang.clone().unwrap().name()
         );
     }
-
-    let matches = cli::matches();
 
     let archive = cli::archive(&matches, &lang)?;
     debug!("archive={}", archive);
@@ -82,9 +79,7 @@ fn main_inner() -> Result<(), Error> {
 
     if !cache_exists {
         if async {
-            info!("Asyncronous mode. (This function might not be working now.)");
-            let p = Path::new(".");
-            Daemonize::new().working_directory(p).start()?;
+            info!("Asyncronous mode. (This function is not working now.)");
         }
 
         if let Err(e) = phase::upload_archive(&s3_context, &hex, &archive) {

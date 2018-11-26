@@ -5,5 +5,5 @@ authors = ["tbrand <taichiro0709@gmail.com>"]
 
 [dependencies]
 failure = "*"
-ring = "*"
 num = "*"
+sha2 = "*"

@@ -1,6 +1,6 @@
 [package]
 name = "famo"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["tbrand <taichiro0709@gmail.com>"]
 
 [dependencies]

@@ -1,81 +1,20 @@
-# Based on the "trust" template v0.1.2
-# https://github.com/japaric/trust/tree/v0.1.2
-
 dist: trusty
+
 language: rust
+
 services: docker
+
 sudo: required
 
 env:
   global:
-    - CRATE_NAME=famo
+  - CRATE_NAME=famo
 
 matrix:
   include:
-    # Android
-    # - env: TARGET=aarch64-linux-android DISABLE_TESTS=1
-    # - env: TARGET=arm-linux-androideabi DISABLE_TESTS=1
-    # - env: TARGET=armv7-linux-androideabi DISABLE_TESTS=1
-    # - env: TARGET=i686-linux-android DISABLE_TESTS=1
-    # - env: TARGET=x86_64-linux-android DISABLE_TESTS=1
-
-    # iOS
-    # - env: TARGET=aarch64-apple-ios DISABLE_TESTS=1
-    #   os: osx
-    # - env: TARGET=armv7-apple-ios DISABLE_TESTS=1
-    #   os: osx
-    # - env: TARGET=armv7s-apple-ios DISABLE_TESTS=1
-    #   os: osx
-    # - env: TARGET=i386-apple-ios DISABLE_TESTS=1
-    #   os: osx
-    # - env: TARGET=x86_64-apple-ios DISABLE_TESTS=1
-    #   os: osx
-
-    # Linux
-    # - env: TARGET=aarch64-unknown-linux-gnu
-    # - env: TARGET=arm-unknown-linux-gnueabi
-    # - env: TARGET=armv7-unknown-linux-gnueabihf
-    # - env: TARGET=i686-unknown-linux-gnu
-    # - env: TARGET=i686-unknown-linux-musl
-    # - env: TARGET=mips-unknown-linux-gnu
-    # - env: TARGET=mips64-unknown-linux-gnuabi64
-    # - env: TARGET=mips64el-unknown-linux-gnuabi64
-    # - env: TARGET=mipsel-unknown-linux-gnu
-    # - env: TARGET=powerpc-unknown-linux-gnu
-    # - env: TARGET=powerpc64-unknown-linux-gnu
-    # - env: TARGET=powerpc64le-unknown-linux-gnu
-    # - env: TARGET=s390x-unknown-linux-gnu DISABLE_TESTS=1
-    # - env: TARGET=x86_64-unknown-linux-gnu
-    - env: TARGET=x86_64-unknown-linux-musl
-
-    # OSX
-    # - env: TARGET=i686-apple-darwin
-    #   os: osx
-    - env: TARGET=x86_64-apple-darwin
-      os: osx
-
-    # *BSD
-    # - env: TARGET=i686-unknown-freebsd DISABLE_TESTS=1
-    # - env: TARGET=x86_64-unknown-freebsd DISABLE_TESTS=1
-    # - env: TARGET=x86_64-unknown-netbsd DISABLE_TESTS=1
-
-    # Windows
-    # - env: TARGET=x86_64-pc-windows-gnu
-
-    # Bare metal
-    # These targets don't support std and as such are likely not suitable for
-    # most crates.
-    # - env: TARGET=thumbv6m-none-eabi
-    # - env: TARGET=thumbv7em-none-eabi
-    # - env: TARGET=thumbv7em-none-eabihf
-    # - env: TARGET=thumbv7m-none-eabi
-
-    # Testing other channels
-    # - env: TARGET=x86_64-unknown-linux-gnu
-    #   rust: nightly
-    # - env: TARGET=x86_64-apple-darwin
-    #   os: osx
-    #   rust: nightly
+  - env: TARGET=x86_64-unknown-linux-musl
+  - env: TARGET=x86_64-apple-darwin
+    os: osx
 
 before_install:
   - set -e
@@ -88,33 +27,32 @@ install:
 script:
   - bash ci/script.sh
 
-after_script: set +e
+after_script:
+  set +e
 
 before_deploy:
   - sh ci/before_deploy.sh
 
+cache: cargo
+
+before_cache:
+  - chmod -R a+r $HOME/.cargo
+
+branches:
+  only:
+  - "/^v\\d+\\.\\d+\\.\\d+.*$/"
+  - master
+notifications:
+  email:
+    on_success: never
+
 deploy:
+  provider: releases
   api_key:
-    secure: "jspfYJGGfhYj6HHs4zAT3K/5JES8NMuEGiUTjukr37OlT2Iqu25BdmMEKuf1DHkrf8rOrVqq2Fiov7cfOLInkbrrcTBSmQbdIleyaPRnLlUI9rR1s8+b7rLbSfZdJXrvTUHD5Ap4Qf3D3C8athnHI6XBTWZE4LypvQDmjGOddY08HQX5W1mWMQkF2Haar2VJx9FjqtKBGTdt2Vz4gp296H11S3zF7nVxph5tL18wJU7YolsypPD82RGxzMFU2HfWF/46pVlMUitNuBsDyIeYi3i85o/HEv6j3O7rU3Vat2k0dD3fn4/WoWaiu5EIa+e683X6K9MKxyK66gePMb0bQIKN2Y+4ELxI7NW8G3scJaiVmQ8GMbKBUyWdS+OyfMqlyyyIwI68MDnDk2TgFqKzGYYBz3IGqut7XvPiYjigIyV8afx5gtI6swMregEcG1UePPwotJxCrq7XBo5vrFDM0AVbbSJJK+QOjpdNHNwe9w6OdckcLc7hn3OEw+glg8Wc/+yvFA5O6lG+SIJsW9h3ezehCj62LR1dInc4Be7qKY/sxhMvWOzP2WCXWHdijgyQkwY6Fhr/Qd3d44cVLmOKJqljNvfolmi1XLgXI2J5uJrEdQmZ2ppMBSjXVmmH4EKbhM0ANqMXynJwt1aEck2NSjwcbP/tneo9R/vAKmbwh4A="
+    secure: yi0wHJxrUfYhKXCIvjEpJfUC/maeeYExRg9YJbRmZdLqxi0d0w2L1i/8lgo4a+1b6mHNsrQno7BYXPOVAtSk7G9yRefzTGNIm+KNl5z6gBSRBI7l9RPZKKIKUDqhjnC3KZ+sHRKYhfMUCcsi3pSuuSfJQzolz1c/kK6mjpjPkdVFTxrVoYDuX1IJbaHe32DlTwyAlTs9t++GF8/EzT0xktWIyUVW7qQmsSH7x15YTKEU6Lmzy9pSr5D9a8uW3FmzwoxnhYVkVL3doAQOH3ncK6Iho9f5eihTSLjvoIgxho9f7wyaxs0zq4vXfyNsR7VlcCI7xCmK16ueiVjVRh6DcGF2+E7V7/svXafrNJXTtZXwFlvw6Naupym+kZD3NQ2HjNfhmd3r+e3+Wd+3lrT7bNyna3qoz+cVGv8WJjx14QRN3hlgIpPmE1Cd4NRlH8BT9PXfoTtEDo9z20luCsB59pFbjZWaOeB/sNpY13E3rZ7JvfpI9WEtDPlPKoTUDrZPx3aS6xJ2CWxQiSE5Qj3D5spucMak2rMyfPeN1jMIsoOjMidA4zGs/ofpqBa30zpqcT0ybA8w4lShMKXinq38o+d9n0AaYmRbMKL2gp7H6raAEPnOIBAmkeu5XTq8j4H7G+Z5isZQMVwSThqn6MGer222ZsYvWb3QeFJmv1W5FZw=
   file_glob: true
   file: $CRATE_NAME-$TRAVIS_TAG-$TARGET.*
   on:
     condition: $TRAVIS_RUST_VERSION = stable
     tags: true
-  provider: releases
   skip_cleanup: true
-
-cache: cargo
-before_cache:
-  # Travis can't cache files that are not readable by "others"
-  - chmod -R a+r $HOME/.cargo
-
-branches:
-  only:
-    # release tags
-    - /^v\d+\.\d+\.\d+.*$/
-    - master
-
-notifications:
-  email:
-    on_success: never

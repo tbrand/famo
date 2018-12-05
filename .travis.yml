@@ -1,11 +1,7 @@
 dist: trusty
-
 language: rust
-
 services: docker
-
 sudo: required
-
 env:
   global:
   - CRATE_NAME=famo
@@ -15,44 +11,34 @@ matrix:
   - env: TARGET=x86_64-unknown-linux-musl
   - env: TARGET=x86_64-apple-darwin
     os: osx
-
 before_install:
   - set -e
   - rustup self update
-
 install:
   - sh ci/install.sh
   - source ~/.cargo/env || true
-
 script:
   - bash ci/script.sh
-
-after_script:
-  set +e
-
+after_script: set +e
 before_deploy:
   - sh ci/before_deploy.sh
-
 cache: cargo
-
 before_cache:
   - chmod -R a+r $HOME/.cargo
-
 branches:
   only:
-  - "/^v\\d+\\.\\d+\\.\\d+.*$/"
-  - master
+    - "/^v\\d+\\.\\d+\\.\\d+.*$/"
+    - master
 notifications:
   email:
     on_success: never
-
 deploy:
   provider: releases
   api_key:
-    secure: yi0wHJxrUfYhKXCIvjEpJfUC/maeeYExRg9YJbRmZdLqxi0d0w2L1i/8lgo4a+1b6mHNsrQno7BYXPOVAtSk7G9yRefzTGNIm+KNl5z6gBSRBI7l9RPZKKIKUDqhjnC3KZ+sHRKYhfMUCcsi3pSuuSfJQzolz1c/kK6mjpjPkdVFTxrVoYDuX1IJbaHe32DlTwyAlTs9t++GF8/EzT0xktWIyUVW7qQmsSH7x15YTKEU6Lmzy9pSr5D9a8uW3FmzwoxnhYVkVL3doAQOH3ncK6Iho9f5eihTSLjvoIgxho9f7wyaxs0zq4vXfyNsR7VlcCI7xCmK16ueiVjVRh6DcGF2+E7V7/svXafrNJXTtZXwFlvw6Naupym+kZD3NQ2HjNfhmd3r+e3+Wd+3lrT7bNyna3qoz+cVGv8WJjx14QRN3hlgIpPmE1Cd4NRlH8BT9PXfoTtEDo9z20luCsB59pFbjZWaOeB/sNpY13E3rZ7JvfpI9WEtDPlPKoTUDrZPx3aS6xJ2CWxQiSE5Qj3D5spucMak2rMyfPeN1jMIsoOjMidA4zGs/ofpqBa30zpqcT0ybA8w4lShMKXinq38o+d9n0AaYmRbMKL2gp7H6raAEPnOIBAmkeu5XTq8j4H7G+Z5isZQMVwSThqn6MGer222ZsYvWb3QeFJmv1W5FZw=
+    secure: "ekwVmSNfntHZr5xsSyvyl1n1ipBcOfILgJRF+Au7VoEiY2THXI8UcnC7ngLxkFr99B0yjUfi3vhpD2eBEkhs/17PBh0izfiOCb+ZCxHaNQq4gE46URRGLT9jEEzgSiKBczSVGOQqEI0mIRyt8+1s1OGk9ch+MVO/fz4XXbWJHf9vNODcHvOtEof+vAqAGbkEAfFxzmxvDE3VmNNRs8Q2+p+VX0xp4dGgQMdNAtNBXc6eel1Tjwq7d0rscTHVBvNLVDw+jwBeM46B6xtmTXemArhseAp6zm5UsOUEI5VtTQlRqfoBIKIuuGB/2Vz9Kk0yIOKqXANjKIR+LbuuetlE535PMJcujhoRoBSzg3J1BJkoy2sIwJ7Rbw0WYuwqlfWQlGoBkA8xoAt4jBiz1YGNvQYuBMzFN7UZ43+l+aL7s3C5HflJK60MJ1D0evz1ylwUuo4Vq38+hxnwcwsOUh/4cmKKEMR+Rvm64kYWBkPk+TmtTXWr1ufrHyyQ76hG7nqgVXFlKXsW6VXLcbAwJ5aeEoiL0QKelTsrja6VJPYKx4vp2JIPsCJkhyHX0IGKEqs4KIb6aQporgV20NzWgLWnJtjWJXY0SAfCHfaKDwhcAE83YB9lh6U9d4Pmlyl7XLN2oLqj5wog0PQ8G2QtEMc3eA5stEQOVhoYUeBZBem6SVM="
   file_glob: true
-  file: $CRATE_NAME-$TRAVIS_TAG-$TARGET.*
+  file: "$CRATE_NAME-$TRAVIS_TAG-$TARGET.*"
   on:
-    condition: $TRAVIS_RUST_VERSION = stable
+    condition: "$TRAVIS_RUST_VERSION = stable"
     tags: true
   skip_cleanup: true
